@@ -1,0 +1,62 @@
+CS35L Spring 2015 Lab 2
+
+/*my buildwords worked fine...but I got 50% off of the assigment cause
+I simply didn't read from stdin...stupid."
+
+A preliminary step I took was to make sure my locales were set correctly.
+To do this, I typed export LC_ALL='C'
+
+First step I took was to sort all the words from /usr/share/dict/words into a
+text file in my working directory, also named words. To do this, I first 
+created the text file in my working directory, then I ran the linux command
+cat /usr/share/dict/words | sort > words.txt
+this pipes the stdout from cat (of the /dict/words) into sort function input
+and then puts that io into my words.txt
+
+Next part of the lab, I needed to take a text file containing the HTML of this
+assignment's web page and run the given commands on the lab. To do this, I use
+command wget http://www.cs.ucla.edu/classes/spring15/cs35L/assign/assign2.html
+Typing cat assign2.html allows me to view the html file
+Now I ran several commands on this html file to see what they did:
+(to see, I did cat assign2.html | (command) )
+
+tr -c 'A-Za-z' '[\n*]'
+Replaces non alphabet letters with newline
+
+tr -cs 'A-Za-z' '[\n*]'
+Same thing as before but squeezed all consecutive new lines (after the first)
+into the first new line...rest of text was just purely alphabetical words
+
+tr -cs 'A-Za-z' '[\n*]' | sort
+Same thing as before but sorted alphabetically
+
+tr -cs 'A-Za-z' '[\n*]' | sort -u
+Same thing as before but no repeated words
+
+tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
+Compared the sorted file from before to words. Result was 3 columns, first
+column with words unique to assign2.html, 2nd with words unique to words.txt
+and 3rd with words shared by both files.
+
+tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words
+Same as before but only prints the first column (only words unique to
+assign2.html)
+
+For the second part of the lab, we had to write a script to spell check
+hawaiian words from the "English to Hawaiian" link given in the assignment
+
+I wrote the script that will get all the hawaiian words from the given website
+
+With my list of hwords given by my script, I find the misspelled hawaiian words
+tr -cs 'A-Za-z' '[\n*]' <assign2 | tr '[:upper:]' '[:lower:]' | sort -u |\
+comm -23 - hwords | wc
+I found 413 misspelled hawaiian words
+
+With my already created list of words, I find misspelled english words
+I ran the same command as above but with hwords instead of words
+I found 13 misspelled english words
+
+Some words that are spelled right in Hawaiian but not in English are
+"pehea" or "pilikua"
+
+

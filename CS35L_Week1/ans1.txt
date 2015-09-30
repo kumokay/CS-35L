@@ -1,0 +1,54 @@
+Laboratory: Linux and Emacs Scavenger hunt
+
+1. man -k [specific function, i.e. find]
+I used man man and found the -k option which gives the specific commands that 
+a function has. In my case, I used man -k find
+
+2. I typed whereis -s cp and whereis -s wc to find the source files for both 
+cp and wc inside the file system. /usr/bin/wc and /bin/cp respectively
+
+3. 
+
+4. I typed in ls -al /usr/bin/cc and it says the symbolic link actually runs 
+gcc.
+
+5. The symbolic mode g-s means that for the group permissions, there is a 
+setgid bit where a specific permission is. This means that upon execution for
+this file, it will allow the group to run the executable with permissions of
+the executable's owner. 
+
+6. you use the option '-mtime -3' to find files that have not been modified 
+for the past 3 days. 
+
+7. I would just type 'find / -mtime -3 -type d' to search all the files 
+recursively from the root directory for directories that haven't been modified
+in the past 3 days. If my current directory was root, I would just use the 
+command 'find . -mtime -3 -type d' to search from the current directory (root)
+
+8. In order to find all the files that had symbolic links, I first navigated
+to the directory find was under (bin) and then I used the command
+'find . -type l -ls' to list out all the symbolic link files. There were 17 
+with symbolic links.
+
+9. In order to find the oldest file in this directory, I first navigated to 
+the stated directory, then I ran the command 'ls -lrt' and scrolled all the
+way up to find the oldest modified file which was libIce.so.6.3.0 An alternate
+solution was to type ls -gt | tail-1 which simply returned the file.
+
+10. the locale command gets its data from /usr/bin, I know this because I ran
+the command readlink -f locale
+
+11. There is the M-x sort-lines, sort-paragraphs, sort-pages, sort-fields,
+sort-columns, sort-numeric-fields. 
+
+12. C-a (move cursor home) C-b (cursor left) C-d (delete) C-e (move to end of
+line) C-f (cursor right) C-g (cancel) C-h (backspace) C-k (delete line) C-l
+(redraw screen) C-n (cursor down) C-o (new line or blank line) C-p (prev line)
+C-q (quote insert) C-r (search back) C-s (search forward) C-w (cut) C-x 
+(prefix for file commands) C-y (yank / paste)
+
+13. C-g will cancel a partially typed or executing command
+
+14. The yank funciton pastes whatever you copied
+
+15. The emacs dired command can optionally list some subdirectories too

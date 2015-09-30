@@ -1,0 +1,17 @@
+Q1.In Brady's patch, the 'case_long_iso_time_style:' was excluded because it
+was duplicated. It would fall through to the second 'case...style' case. It 
+wasn't required because it was just cleaning up messy code. 
+
+Q2. Maybe some programs / people are not accustomed to the traditional format
+that we patched to. In the end, people in other countries who don't understand
+this format isn't too much of an issue (it's not that hard to recognize a date)
+however, programs that were built around other formats might cause bugs.
+
+Q3. This script crashes when invoked on an empty file like /dev/null because
+it cannot handle the case that it is not passed in any file that it can process
+There was an index out of bounds error.
+
+Q4. There is an error when running this python2 script with the python3
+interpreter because of a syntactical difference between the two interpreters. 
+The terminal said that there was an invalid syntax use at line 65 of the given
+code. 

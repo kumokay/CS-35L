@@ -1,0 +1,26 @@
+//Homework Week 6
+
+1. Suppose other teams had been observing...
+
+The data is encrypted so even if other teams have been reading our bytes, they
+wouldn't be able to understand the data. 
+
+If the other team tapped my keyboards and observed keystrokes, our data would
+not be compromised because the only thing we type when actually sending files
+is the public key. Should we have actually typed data, then our data would be
+compromised.
+
+If the other teams had physical control of the USB they have the highest level
+of attack...they literally have our private key. They can decrypt anything
+between me and the receiver. A weakness of our team is that we let them have
+physical access in the first place.
+
+2. Explain why the gpg --verify command in the following instructions doesn't
+really verify that you personally create the tar file in question. How to fix?
+
+gpg --verify can only verify integrity of document that was sent. It doesn't
+work like a certificate does. An attacker can just use a public key to sign
+as a different person. 
+
+To approach this problem, we need a certificate-like mechanism. A third party
+should be able to keep track of who the public key actually belongs to.

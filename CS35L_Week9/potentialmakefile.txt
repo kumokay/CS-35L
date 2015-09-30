@@ -1,0 +1,47 @@
+//making the cpuid static library
+//statically linking randmain.o and randcpuid.o
+
+gcc -mrdrnd -c randcpuid.c
+gcc -I . -c randmain.c
+gcc -o randmain randmain.o randcpuid.o -ldl
+
+//this will create a combined.o that links *.o and *.a together
+
+//THIS MAKES AN EXECUTABLE BUT HOW DO WE DYNAMICALLY LINK IT!?
+
+//making the dynamic libraries for hw OR sw
+//dynamically linking the libraries to randmain??
+
+gcc -Wall -fPIC -c randlibsw.c
+gcc -Wall -fPIC -c randlibhw.c 
+
+gcc -shared -o randlibsw.so randlibsw.o
+gcc -shared -o randlibhw.so randlibhw.o
+
+
+
+
+//copy library into standard directory --> /usr/lib
+
+//using the dynamic libraries
+gcc -o finished combined.o randlibsw.so randlibhw.so -ldl -Wl,-rpath=$PWD
+
+
+
+
+//MAKEFILE SYNTAX
+CC=gcc
+
+all : randlibhw.so randlibsw.so randmain
+
+randlibsw.so: randlibsw.c
+     $ (CC) randlibsw.c -shared -fPIC -o randlibsw.so
+
+randlibhw.so: randlibhw.c
+     $ (CC) randlibhw.c -shared -fPIC -o randlibhw.so
+
+randcpuid: randcpuid.c
+     $ (CC) -mrdrnd -c randcpuid.c
+
+randmain: randmain.c
+     $ (CC) randmain.c -L. -Wl,-rpath=. -lrandlibsw -lrandlibhw -o randmain

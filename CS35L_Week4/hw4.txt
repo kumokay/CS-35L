@@ -1,0 +1,56 @@
+For homework, we had to publish the patch that we created in the lab
+
+I first created my new branch called quote
+> git checkout v3.0 -b quote
+
+Next, I applied the patch that I got from the lab
+> patch -p1 < quote-3.0-patch.txt
+
+I ran into a problem here when I tried to patch my current git directory...
+it seemed that git thought I had already patched the files so it asked if
+I wanted to revert the patch. To continue with the homework, I just 
+redownloaded another diffutils directory and patched that new directory
+I copy pasted my quote-3.0-patch.txt into this new directory and it worked.
+
+All 6 files were patched.
+
+Now I changed into my source directory, and I opened one of the modified
+.c files in emacs. I created a changelog with the EMACS command Ctrl-x 4 a
+I entered in all 6 files that were changed and added a brief description on
+how they were modified
+
+Now I commited changes to the new branch
+> git add .
+> git commit -F <Changelog File>
+The above command created the commit with the Changelog File as the message
+
+It tracked down my name and email as the Committer
+
+Now I had to create a formatted patch so other people could get my changes
+> git format-patch -1 --stdout > formatted-patch.txt
+
+To test this patch (since I didn't have a partner at the time) I simply created
+a new branch 
+
+> git checkout v3.0 -b temp
+> git am < formatted-patch.txt
+
+Now I build the system:
+> ./boostrap
+> ./configure
+> make
+> make check
+
+I initially had a problem with using bootstrap because I didn't have my PATH 
+variable set correctly so I just used the export command shown in lab4.txt
+
+To check if my Changelog entry works, I used the following commands
+> make distdir
+> cd diffutils*
+
+I then looked at the ChangeLog file and indeed, I see the message that I left
+when originally creating the formatted-patch
+
+For the final part the program, I had a problem with GUI that Lauren helped me
+fix. After that, I navigated the /~eggert/src/gnu/emacs and I ran the command
+> gitk

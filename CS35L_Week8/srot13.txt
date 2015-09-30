@@ -1,0 +1,61 @@
+/*****************
+timing differences
+*****************/
+Here I commpared the results of my srot13u against srot13 and against srot13s
+with the time command.
+Using large input: 100,000 input lines
+
+srot13
+real    0m4.782s
+user    0m0.275s
+sys     0m0.116s
+ 
+srot13u
+Number of comps: 917214
+real    0m5.506s
+user    0m0.290s
+sys     0m3.291s
+
+srot13s
+real    0m4.510s
+user    0m0.514s
+sys     0m0.167s
+
+We see that sys time increased greatly in srot13u while srot13 
+is comparable in performance to srot13s.
+
+I tested them against each other again with small input: 10 lines
+
+srot13
+real    0m0.003s
+user    0m0.000s
+sys     0m0.001s
+
+srot13u
+Number of comps: 23
+real    0m0.003s
+user    0m0.000s
+sys     0m0.001s
+
+srot13s
+real    0m0.005s
+user    0m0.000s
+sys     0m0.004s
+
+Not too much difference to be noticed here...
+
+/*****************************
+# comps as func of input lines
+*****************************/
+Now I varied input lines and I wanted to see how many comparisons were
+made by srot13u based off the input lines.
+
+Input Line # 		Comps
+10					23
+100					1420
+1000				7007
+10000				94315
+100000				917214
+
+As expected, the number of comparisons follow the O(nlogn) timing
+of quicksort (which was used in srot13u).

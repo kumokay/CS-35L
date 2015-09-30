@@ -1,0 +1,83 @@
+Lab 4: Managing a backported change
+
+First thing I did was to update the path variable to include git
+> PATH=$PATH:/usr/local/cs/bin
+
+I could have also used export...
+> export PATH=/usr/local/cs/bin:$PATH
+
+Then, I created a working directory
+> mkdir gitroot --> and I went into the directory cd gitroot
+
+Next, I got a copy of the Diffutils using git clone
+> git clone git://git.savannah.gnu.org/diffutils.git
+
+I changed directory to go into the repo: >cd diffutils
+
+I put the log of changes and list of tags into textfiles
+> git log > git-log.txt
+> git tag > git-tags.txt
+
+Then I searched for the commit entitled "maint:quote ..."
+by using ctrl-F in the git-log.txt file I created...I copied the hashcode
+which looked like 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f...
+(to "paste" into the terminal, I simply right click)
+
+I used the command show to put it into a patch text file
+> git show 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f > quote-patch.txt
+
+Next I checked out the version 3.0 of Diffutils from the repository
+> git checkout v3.0
+Now the HEAD (head of repository I'm working with) points to version 3.0
+
+Now I used patch command to apply quote-patch.txt to version 3.0
+> patch -p1 < quote-patch.txt
+to apply the patch while skipping over some files (it did not find those files
+given the -p1 command, so I just skipped over them with <Enter>)
+
+I used the git status command to see which files were changed with the patch
+> git status
+showed all the modified and untracked files
+
+Then, looking at the modified non - .c files, I opened them with Emacs and I 
+Ctrl-x v = Ctrl-x v u to undo all the commend changes
+
+Now I look at the modified .c files
+Ctrl-x v = (in order to look at changed mode)
+If the changes were made to the comments, I undid that hunk
+To undo a hunk I used Ctrl-u Ctrl-c Ctrl-a
+
+Ctrl-x Ctrl-c (yes) to save
+
+I could have also used git checkout -- NEWS (<-- this is file name)
+to revert changes to specific modified files
+
+Now when I ran git status again, I saw the only modified files were .c files
+Only 6 remained, as the lab said:
+cmp.c, diff.c, diff3.c, dir.c, sdiff.c, and util.c
+(The rest I could've just used git checkout on...)
+
+Now I compared my src/*.c.rej files with my original *.c files to see if any
+changes were made that would affect the source code.
+I applied the changes I saw in the .c.rej files that were changes to the
+source code and I copy pasted it back into the original .c file
+
+In the both cases, everything that was rejected was an essential change to
+the source code.
+
+Now I clear all the untracked files with the git command
+> git clean -f
+
+Now I put my git diff into quote-3.0-patch.txt
+> git diff > quote-3.0-patch.txt
+
+In order to build the modified version of Diffutils, I used these commands
+> ./bootstrap
+> ./configure
+> make
+> make check
+
+I verified that indeed "diff . -" did the right thing now
+
+I compared my quote-3.0-test.txt and my quote-3.0-patch.txt and the files
+are not identical, the differences were not innocuous

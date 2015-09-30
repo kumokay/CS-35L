@@ -1,0 +1,82 @@
+//log.txt Week 6 Lab
+
+First I needed to restart the computer and run it on ubuntu (since this
+assignment requires root permission). Lauren gave us a CD and we were able to
+run Ubuntu. 
+
+The task of this Lab was to be able to securely log into each others’
+computers (working with a partner)
+
+//SETTING UP
+I had to have open-server and openssh-client installed:
+$ dpkg --get-selections | grep openssh
+This command showed which openssh items I had installed...these commands were
+used to install them
+$ sudo apt-get install openssh-server
+$ sudo apt-get install openssh-client
+
+My partner and I were alternated being server/client
+
+//KNOWING ABOUT IP ADDRESSES
+$ ifconfig
+this instruction configures or displays the current network interface
+configuration(IP address,etc)
+$ ping <ip_addr>(packet internet groper)
+this instruction tests the reachability of a host on an IP network
+it measures round trip time for messages sent from src to dest
+ex: $ ping 192.169.0.1, or $ ping google.com
+
+//Client Instructions
+generate public and private keys
+$ ssh-keygen 
+This prompted me for a location to put the key, by default we just put it in
+‘/home/ubuntu/.ssh’
+It then prompted us for a passphrase, we didn’t put anything in
+
+copying public key to server for key-based authentication
+(~/.ssh/authorized_keys)
+(at this point, my partner created a UserName for me, I had him type $
+ifconfig so I could get his server_ip_addr)
+$ ssh-copy-id -i UserName@server_ip_addr
+I was asked if i wanted to connect then prompted with the password at this
+point
+
+add private key to authentication agent (using ssh-agent)
+$ ssh-add
+
+SSHing to server
+$ ssh UserName@server_ip_addr
+OR
+$ ssh -X UserName@server_ip_addr
+this second command is X11 session forwarding
+
+Testing the connection by running a command on remote host
+$ xterm
+$ firefox
+
+CONNECTED! (when I typed in ifconfig, I saw my partner’s ip address)
+
+//Server Instructions
+generate public and private keys //same as client
+$ ssh-keygen 
+
+create an acc for the client on the server
+$ sudo useradd -d /home/<homedir_name> -m <username>
+$ sudo passwd <username>
+I entered in the necessary information
+
+create .ssh directory for the new user
+$ cd /home/<homedir_name>
+$ sudo mkdir .ssh
+
+change ownership and permission on .ssh directory
+$ sudo chown -R username .ssh
+$ sudo chmod 700 .ssh //read, write, execute permissions for user
+
+optional: disable password-based authentication
+$ emacs /etc/ssh/sshd_config
+I changed password authentication option to no.
+
+CONNECTED!
+Client ip address matched mine when he ssh’d in.
+

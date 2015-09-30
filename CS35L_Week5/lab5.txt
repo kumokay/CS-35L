@@ -1,0 +1,71 @@
+//Lab 5 descriptions
+
+I downloaded the tar file of the coreutils with bug from the website
+and I unzipped it with this command
+> tar xvf coreutils-with-bug.tar.gz
+
+A directory called coreutils-with-bug was created in my working directory
+I moved into that directory
+> cd coreutils-with-bug
+
+Then I tried to configure and make the file
+> ./configure
+> make
+
+It was able to be configured, but it failed when I tried to make it.
+
+So now, I used wget to download the patch. 
+> wget http://cs.ucla.edu/classes/spring15/cs35L/assign/coreutils.diff
+
+I patched it with this command since it was very specific where the pathces
+would be made. (i.e. --- lib/utimens.c instead of --- A/lib/utimens.c)
+> patch -p0 < coreutils.diff
+(utimens.c, utimens.h, copy.c, tee.c, and touch.c were all patched)
+
+The renaming patch fixed the problem because it was able to specifiy
+a that the functions used before were renamed to what was actually used
+(i.e. tee was changed to coreutils_tee and futimens was changed to
+coreutils_futimens)...functions were renamed at some point in the source files.
+
+Now I rebuilt the program, when I typed the 'make' command this time it worked
+
+Now I needed to recreate the bug. I created three files called now, now1, and
+wwi-armistice with the given time stamps on the lab spec. I created a temporary
+directory to hold these files (called temp)
+>touch now
+>touch now1
+>touch -t 191811111100.00 wwi-armistice (this should create it in 1918)
+
+Now I needed to debug the problem.
+
+I now opened the source file ls.c in emacs and ran GDB with these commands.
+(emacs) 'M-x gdb' and 'gdb --anotate3 ./ls'
+
+I used the tricks that I was taught -- setting breakpoints at certain functions
+and stepping through lines of code and into functions with 's' and going through
+lines of instructions with 'n' and continuously looking at the variables. 
+
+The problem that was found was in the timespec_cmp function in which overflow happened.
+To fix this, I simply needed to change the declarations of the variables. It used
+to be an int to compare difference between time variables, signed long long int was
+a good enough replacement. Depending on the calculations used, this function would
+return 1, 0 or -1. 
+
+To help fix this problem, I created a copy of the buggy lib/timespec.h file. I then 
+modified that copy to put my code in the bugged timespec_cmp function.
+
+I manually opened the timespecnew.h file with emacs and I ran the emacs command
+Ctrl-x 4 a (to create the changelog and added a short description of what I changed)
+
+To create the lab5.diff I simply ran this command.
+> diff -u timespec.h timespecpatch.h > lab5.diff
+
+When I recompiled coreutils with the patched files, that one bug was fixed
+
+Now I tested this on the SEASnet Linux servers instead of my temp directory.
+I used the already installed touch and ls instead of the bugged coreutils.
+SEASnet thought that the wwi-armistice file was created in the future. This
+is because the SEASnet servers are 64 bit while the tiles I touched (which
+were truncated in the process) are 32 bit. Because of this, the sign bit (MSB)
+is lost in these signed values and thus there is a value in the future
+displayed. 

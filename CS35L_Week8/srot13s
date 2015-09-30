@@ -1,0 +1,6 @@
+#! /bin/bash
+
+#cat will grab stdin, pipe it into tr2b and the translations
+
+cat | ./tr2b "nopqrstuvwxyzabcdefghijklm" "abcdefghijklmnopqrstuvwxyz" \
+| sort | ./tr2b "abcdefghijklmnopqrstuvwxyz" "nopqrstuvwxyzabcdefghijklm"

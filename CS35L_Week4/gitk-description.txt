@@ -1,0 +1,24 @@
+Here, I'm looking at the gitk window depcting a visualization of
+Professor Eggert's GNU Emacs git repository. 
+
+The top left subwindow gives information about the structure of
+the repository. It shows where the HEAD is, where the master
+branch is, and a series of commits that were made.
+
+The subwindow directly to the right of that gives information
+about the committer's name and email address.
+
+To the above subwindow's right gives the timestamp of the commit
+
+Right below the top left subwindow there's a small input text box
+that holds the commit SHA. 
+
+Below that holds information on the selected commit. This includes
+the name and email of the committer, timestamp, and parent and child
+commits. 
+
+Below the information subwindow, there is the file changes subwindow
+which shows what changes were made to the repository in diff format
+
+Finally, to the right of the diff subwindow is a subwindow that shows
+the files that were impacted by the selected commit.

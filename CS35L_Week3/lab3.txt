@@ -1,0 +1,42 @@
+first I downloaded coreutils-7.6 with the command wget with the url
+http://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+
+then I untar and unzipped it
+tar -xzvf coreutils-7.6.tar.gz
+
+I made a directory called coreutilsInstall in home directory
+mkdir ~/coreutilsInstall
+
+I navigated into my coreutils-7.6 directory (in current directory)
+
+Then I ran the script configure and changed path to install
+./configure --prefix=/u/ee/ugrad/scotts/coreutilsInstall (absolute path)
+
+I first compiled by typing 'make'
+Then I typed 'make install' to install in the coreutilsInstall folder I made
+
+Now my task was to reproduce the bug: If I go to my coreutilsInstall directory
+and run the command './ls -l' I see that the old unix bug is still there
+
+Then I needed to apply the patch. I first opened vim and copy pasted the given
+patch into a file I called mypatch
+Then I ran the command 'patch -p1 < mypatch'
+Since in the patch it said in the beginning ---a/src/ls.c and +++b/src/ls.c
+So in order to get to ls.c from the current directory (coreutils-7.6)
+aka .../coreutils-7.6/src/ls.c ... there is only one other folder to go into 
+in order to access ls.c. So I run -p1 to "get rid" of one slash
+
+It said 'patching file src/ls.c' then asked if I should assume -R
+This asks if I should revert the last patch I attempted before...I said yes
+Then it said that both hunks succeeded
+
+Now I went back to coreutils-7.6 directory and typed 'make' to compile the
+patched version
+
+I 'cd src' in order to move to the source directory in coreutils-7.6
+
+The only command that needed to be executed was the one involving ls.c because
+that was the only file that was changed...
+
+Then I navigated to coreutilsInstall and made an old file with
+touch -t 201402200000 oldfile and indeed ls has been patched

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+grep -E '<td>.+</td>' hwnwdseng.htm |\
+sed 's/<[^>]*>//g' |\
+sed '1~2d' |\
+
+sed 's/`/'"'"'/g' |\
+tr '[:upper:]' '[:lower:]' |\
+tr -cs [^pPkK\'mMnNwWlLhHaAeEiIoOuU] '[\n*]' |\
+sed '1d' |\
+
+sort -u
+
+#first four of lines will get me just the hawaiian words
+#then i replaced ` with '
+#then i change upper case letters to lower case
+#then i get rid of the bad hawaiian words
+#then i sort the entire list

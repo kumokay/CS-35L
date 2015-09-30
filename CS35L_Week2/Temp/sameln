@@ -1,0 +1,59 @@
+#!/bin/bash
+#chmod u+x sameln in order to make this script executable
+
+directory=$1
+cd "$directory"
+#getting input from user and changing the directory to input dir
+
+declare -a regfiles
+
+regfile=`ls -a | sort`
+
+#i want to be able to check for hidden files too
+#i sort so I don't have to deal with the lexiographical problem
+
+iter=0
+#iter will also hold the number of files
+
+for FILE in $regfile
+do
+		if [ -f "$FILE" ]
+		then
+				arrreg[$iter]="$FILE"
+				let iter=iter+1
+		fi
+done
+
+#this will get all regular files and put it into my regfiles array
+
+#more relatable way to write for loops for me...
+#nested for loop to go through all the files
+
+let iter=iter-1
+
+for i in `seq 0 $iter`
+do
+		if [ -r "${arrreg[$i]}" ]
+		then
+				#since I don't want to loop back to items I already checked
+				nextindex=i
+				let nextindex=nextindex+1
+				for j in `seq $nextindex $iter`
+				do
+						cmp -s -- "${arrreg[$i]}" "${arrreg[$j]}"
+						#$? will get me the most recently returned argument
+						if [ $? -eq 0 ]
+							then
+									#if they're the same, hardlink j to i
+									name="${arrreg[$j]}"
+									rm -- "${arrreg[$j]}"
+									ln -- "${arrreg[$i]}" "$name"
+						fi
+				done
+		else
+				echo "not readable"
+		fi
+done
+
+
+

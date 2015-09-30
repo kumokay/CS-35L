@@ -1,0 +1,82 @@
+/***********
+tr2b and tr2u
+************/
+I needed to produce an unbuffered and buffered version for tr
+(a)The buffered version (tr2b.c) uses library functions -- getchar, putchar
+(b)The unbuffered version (tr2u.c) uses system calls directly -- read, write
+
+To test both of these, I first checked out what the output should have been.
+I created a file named testing.txt and put in "abcabcabcabc"
+> cat testing.txt | tr "abc" "def"
+outputs: defdefdefdef
+
+I wrote my tr2b and tr2u functions and I tested them
+> cat testing.txt | ./tr2b "abc" "def"
+> cat testing.txt | ./tr2u "abc" "def"
+
+I had some trouble with syntax for the unbuffered system call version, this is
+how I ended up doing the translate:
+while ((read(0, c, 1)) > 0)//when using read, 0 is returned for end of file
+{						//read one byte at a time like spec says
+	for (i = 0; i < len; i++)
+	{
+		if (c[0] == firstarg[i])//found a letter to translate
+		{
+			write(1, &secarg[i], 1);//write to stdout
+			break;
+		}
+	}
+}
+It works, we can move on...
+
+/*****
+strace
+*****/
+I used 'strace' command to see how many system calls were issued when
+(a) copies one file to another and when (b) copies a file to your terminal
+The file that we used has 5,000,000 bytes, big.txt
+> od -An -tf -N 5000000 < /dev/urandom | tr -s ' ' '\n' > big.txt
+
+tr2b: // file.txt holds the information on the system calls
+(a)copying file (big.txt) to another (output.txt):
+> strace -o file.txt -c ./tr2b "c" "f" < big.txt > output.txt
+		There were a total of 4699 system calls made.
+		It made several (faster) system calls (write) with nbyte size of 65536
+
+(b)copying file (big.txt) to terminal:
+> strace -o file.txt ./tr2b "d" "f" < big.txt
+		There were a total of 3127363 system calls.
+		It made several system calls (write) with nbyte size of 23 or 24
+		I'm gonna have to leave it to run overnight for tr2u...
+		
+tr2u: // file.txt holds the information on the system calls
+(a)copying file (big.txt) to another (output.txt):
+> strace -o file.txt ./tr2u "c" "f" < big.txt > output.txt
+		Running this command was taking way too long. There were millions of 
+		system calls being made here, using the unbuffered version resulted in
+		system calls for all of the characters making it very slow.
+
+(b)copying file (big.txt) to terminal:
+> strace -o file.txt ./tr2u "d" "f" < big.txt
+		I saw that this made a system call to read/write for every single 
+		character in big.txt. This resulted in millions of system calls
+		(very slow).
+
+/****
+time
+****/
+Finally, we use the 'time' command to measure how much faster one program is
+when they copy the same amount of data.
+
+> time cat big.txt | ./tr2b "abc" "def"
+real    0m6.984s
+user    0m1.086s
+sys     0m1.487s
+
+> time cat big.txt | ./tr2u "abc" "def"
+real    0m18.083s
+user    0m1.316s
+sys     0m16.782s
+
+As shown above, the system calls to read each single byte in the unbuffered version
+makes performance much slower.
